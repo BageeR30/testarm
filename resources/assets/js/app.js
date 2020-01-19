@@ -15,6 +15,7 @@ window.Vue.use(VueRouter);
 import EmployeesIndex from './components/employees/employeesIndex.vue';
 import EmployeesCreate from './components/employees/employeesCreate.vue';
 import EmployeesEdit from './components/employees/employeesEdit.vue';
+import EmployeesStructure from './components/employees/employeesStructure.vue';
 
 const routes = [
     {
@@ -23,8 +24,9 @@ const routes = [
             employeesIndex: EmployeesIndex
         }
     },
-    {path: '/admin/employees/create', component: EmployeesCreate, name: 'createCompany'},
-    {path: '/admin/employees/edit/:id', component: EmployeesEdit, name: 'editCompany'},
+    {path: '/admin/employees/create', component: EmployeesCreate, name: 'createEmployee'},
+    {path: '/admin/employees/edit/:id', component: EmployeesEdit, name: 'editEmployee'},
+    {path: '/admin/employees/structure', component: EmployeesStructure, name: 'employeesStructure'}
 ]
 
 const router = new VueRouter({ routes })

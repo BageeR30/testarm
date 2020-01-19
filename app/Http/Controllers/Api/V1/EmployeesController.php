@@ -20,17 +20,6 @@ class EmployeesController extends Controller
     public function index()
     {
         return EmployeeResource::collection(Employee::all());
-        return Employee::all();
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -41,6 +30,13 @@ class EmployeesController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'phone' => 'required|integer',
+            'name' => 'required',
+            'position_id' => 'required|integer',
+            'department_id' => 'integer|nullable',
+            'head_id' => 'integer|nullable',
+        ]);
         $contact = Contact::create([
             'phone' => $request->phone,
             'city' => $request->city,
@@ -50,7 +46,9 @@ class EmployeesController extends Controller
         $employee = Employee::create([
             'name' => $request->name,
             'contact_id' => $contact->id,
-            'position_id' => $request->position_id
+            'position_id' => $request->position_id,
+            'department_id' => $request->department_id,
+            'head_id' => $request->head_id,
         ]);
 
         return new EmployeeResource($employee);
@@ -59,7 +57,7 @@ class EmployeesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Employee  $employee
      * @return \Illuminate\Http\Response
      */
     public function show(Employee $employee)
@@ -67,33 +65,32 @@ class EmployeesController extends Controller
         return new EmployeeResource($employee);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-
+   
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Employee $employee)
     {
-        //
+        $employee->update($request->except(['id', 'contact_id']));
+        $employee->contact()->update($request->except('id'));
+        
+        return new EmployeeResource($employee);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Employee $employee)
     {
-        //
+        $employee->delete();
+
+        return response()->json(null, 204);
     }
 }

@@ -1088,6 +1088,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_employees_employeesCreate_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_employees_employeesCreate_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_employees_employeesEdit_vue__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_employees_employeesEdit_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_employees_employeesEdit_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_employees_employeesStructure_vue__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_employees_employeesStructure_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_employees_employeesStructure_vue__);
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -1106,12 +1108,13 @@ window.Vue.use(__WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]);
 
 
 
+
 var routes = [{
     path: '/',
     components: {
         employeesIndex: __WEBPACK_IMPORTED_MODULE_1__components_employees_employeesIndex_vue___default.a
     }
-}, { path: '/admin/employees/create', component: __WEBPACK_IMPORTED_MODULE_2__components_employees_employeesCreate_vue___default.a, name: 'createCompany' }, { path: '/admin/employees/edit/:id', component: __WEBPACK_IMPORTED_MODULE_3__components_employees_employeesEdit_vue___default.a, name: 'editCompany' }];
+}, { path: '/admin/employees/create', component: __WEBPACK_IMPORTED_MODULE_2__components_employees_employeesCreate_vue___default.a, name: 'createEmployee' }, { path: '/admin/employees/edit/:id', component: __WEBPACK_IMPORTED_MODULE_3__components_employees_employeesEdit_vue___default.a, name: 'editEmployee' }, { path: '/admin/employees/structure', component: __WEBPACK_IMPORTED_MODULE_4__components_employees_employeesStructure_vue___default.a, name: 'employeesStructure' }];
 
 var router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({ routes: routes });
 
@@ -47688,8 +47691,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             employees: [],
             departments: [],
-            selected: 'Все',
-            key: 10
+            selected: 'Все'
         };
     },
     mounted: function mounted() {
@@ -47716,9 +47718,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return this.employees.filter(function (elem) {
 
                 if (sel === 'Все') return true;else if (elem.department != null) {
-                    console.log(elem.department.id);
-                    console.log(app);
-                    return elem.department.id == app.departments[app.key];
+
+                    return elem.department.id == sel;
                 } else return false;
             });
         }
@@ -47790,7 +47791,7 @@ var render = function() {
             _c("option", [_vm._v("\n                Все\n            ")]),
             _vm._v(" "),
             _vm._l(_vm.departments, function(department, key) {
-              return _c("option", [
+              return _c("option", { domProps: { value: department.id } }, [
                 _vm._v(
                   "\n                " +
                     _vm._s(department.name) +
@@ -47816,7 +47817,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "tbody",
-            _vm._l(_vm.employees, function(employee, index) {
+            _vm._l(_vm.filteredList, function(employee, index) {
               return _c("tr", [
                 _c("td", [_vm._v(_vm._s(employee.name))]),
                 _vm._v(" "),
@@ -48024,27 +48025,87 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            company: {
+            employee: {
                 name: '',
-                address: '',
-                website: '',
-                email: ''
-            }
+                department_id: '',
+                position_id: '',
+                head_id: '',
+                phone: ''
+            },
+            departments: [],
+            positions: [],
+            employees: [],
+            selected1: -1,
+            selected2: 1,
+            selected3: -1
+
         };
     },
+    mounted: function mounted() {
+        var app = this;
+        axios.get('/api/v1/departments').then(function (resp) {
+            app.departments = resp.data;
+        }).catch(function (resp) {
+            console.log(resp);
+            alert("Could not load departments");
+        });
+
+        axios.get('/api/v1/positions').then(function (resp) {
+            app.positions = resp.data;
+        }).catch(function (resp) {
+            console.log(resp);
+            alert("Could not load positions");
+        });
+
+        axios.get('/api/v1/employees').then(function (resp) {
+            app.employees = resp.data.data;
+        }).catch(function (resp) {
+            console.log(resp);
+            alert("Could not load employees");
+        });
+    },
+
     methods: {
         saveForm: function saveForm() {
             var app = this;
-            var newCompany = app.company;
-            axios.post('/api/v1/companies', newCompany).then(function (resp) {
+            var newEmployee = app.employee;
+            newEmployee.position_id = app.selected2;
+            newEmployee.department_id = app.selected1;
+            newEmployee.head_id = app.selected3;
+            console.log(newEmployee);
+            axios.post('/api/v1/employees', newEmployee).then(function (resp) {
                 app.$router.push({ path: '/' });
             }).catch(function (resp) {
                 console.log(resp);
-                alert("Could not create your company");
+                alert("Could not create your employee");
             });
         }
     }
@@ -48066,7 +48127,7 @@ var render = function() {
         _c(
           "router-link",
           { staticClass: "btn btn-default", attrs: { to: "/" } },
-          [_vm._v("Back")]
+          [_vm._v("Назад")]
         )
       ],
       1
@@ -48074,7 +48135,7 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "panel panel-default" }, [
       _c("div", { staticClass: "panel-heading" }, [
-        _vm._v("Create new company")
+        _vm._v("Добавление нового сотрудника")
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "panel-body" }, [
@@ -48091,28 +48152,26 @@ var render = function() {
           [
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-xs-12 form-group" }, [
-                _c("label", { staticClass: "control-label" }, [
-                  _vm._v("Company name")
-                ]),
+                _c("label", { staticClass: "control-label" }, [_vm._v("ФИО")]),
                 _vm._v(" "),
                 _c("input", {
                   directives: [
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.company.name,
-                      expression: "company.name"
+                      value: _vm.employee.name,
+                      expression: "employee.name"
                     }
                   ],
                   staticClass: "form-control",
                   attrs: { type: "text" },
-                  domProps: { value: _vm.company.name },
+                  domProps: { value: _vm.employee.name },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.$set(_vm.company, "name", $event.target.value)
+                      _vm.$set(_vm.employee, "name", $event.target.value)
                     }
                   }
                 })
@@ -48122,67 +48181,172 @@ var render = function() {
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-xs-12 form-group" }, [
                 _c("label", { staticClass: "control-label" }, [
-                  _vm._v("Company address")
+                  _vm._v("Отдел")
                 ]),
                 _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.company.address,
-                      expression: "company.address"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text" },
-                  domProps: { value: _vm.company.address },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selected1,
+                        expression: "selected1"
                       }
-                      _vm.$set(_vm.company, "address", $event.target.value)
+                    ],
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.selected1 = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
                     }
-                  }
-                })
+                  },
+                  [
+                    _c("option", { domProps: { value: null } }, [
+                      _vm._v(
+                        "\n                                Пусто\n                            "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.departments, function(department, key) {
+                      return _c(
+                        "option",
+                        { domProps: { value: department.id } },
+                        [
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(department.name) +
+                              "\n                            "
+                          )
+                        ]
+                      )
+                    })
+                  ],
+                  2
+                )
               ])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-xs-12 form-group" }, [
                 _c("label", { staticClass: "control-label" }, [
-                  _vm._v("Company website")
+                  _vm._v("Должность")
                 ]),
                 _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.company.website,
-                      expression: "company.website"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text" },
-                  domProps: { value: _vm.company.website },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selected2,
+                        expression: "selected2"
                       }
-                      _vm.$set(_vm.company, "website", $event.target.value)
+                    ],
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.selected2 = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
                     }
-                  }
-                })
+                  },
+                  _vm._l(_vm.positions, function(position, key) {
+                    return _c("option", { domProps: { value: position.id } }, [
+                      _vm._v(
+                        "\n                                " +
+                          _vm._s(position.name) +
+                          "\n                            "
+                      )
+                    ])
+                  }),
+                  0
+                )
               ])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-xs-12 form-group" }, [
                 _c("label", { staticClass: "control-label" }, [
-                  _vm._v("Company email")
+                  _vm._v("Руководитель")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selected3,
+                        expression: "selected3"
+                      }
+                    ],
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.selected3 = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  [
+                    _c("option", { domProps: { value: null } }, [
+                      _vm._v(
+                        "\n                                Пусто\n                            "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.employees, function(employee, key) {
+                      return _c(
+                        "option",
+                        { domProps: { value: employee.id } },
+                        [
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(employee.name) +
+                              "\n                            "
+                          )
+                        ]
+                      )
+                    })
+                  ],
+                  2
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-xs-12 form-group" }, [
+                _c("label", { staticClass: "control-label" }, [
+                  _vm._v("Телефон")
                 ]),
                 _vm._v(" "),
                 _c("input", {
@@ -48190,19 +48354,19 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.company.email,
-                      expression: "company.email"
+                      value: _vm.employee.phone,
+                      expression: "employee.phone"
                     }
                   ],
                   staticClass: "form-control",
                   attrs: { type: "text" },
-                  domProps: { value: _vm.company.email },
+                  domProps: { value: _vm.employee.phone },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.$set(_vm.company, "email", $event.target.value)
+                      _vm.$set(_vm.employee, "phone", $event.target.value)
                     }
                   }
                 })
@@ -48223,7 +48387,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-xs-12 form-group" }, [
-        _c("button", { staticClass: "btn btn-success" }, [_vm._v("Create")])
+        _c("button", { staticClass: "btn btn-success" }, [_vm._v("Создать")])
       ])
     ])
   }
@@ -48336,14 +48500,41 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     mounted: function mounted() {
         var app = this;
         var id = app.$route.params.id;
-        app.companyId = id;
-        axios.get('/api/v1/companies/' + id).then(function (resp) {
-            app.company = resp.data;
+        app.employeeId = id;
+        axios.get('/api/v1/employees/' + id).then(function (resp) {
+            console.log(resp.data.data);
+            app.selected2 = resp.data.data.department.name;
+
+            app.employee = resp.data.data;
         }).catch(function () {
             alert("Could not load your company");
         });
@@ -48351,24 +48542,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     data: function data() {
         return {
-            companyId: null,
-            company: {
+            employeeId: null,
+            employee: {
                 name: '',
-                address: '',
-                website: '',
-                email: ''
-            }
+                department_id: '',
+                position_id: '',
+                head_id: '',
+                phone: ''
+            },
+            departments: [],
+            positions: [],
+            employees: []
+            // selected1: this.,
+            // selected2: this.,
+            // selected3: this.,
         };
     },
     methods: {
         saveForm: function saveForm() {
             var app = this;
-            var newCompany = app.company;
-            axios.patch('/api/v1/companies/' + app.companyId, newCompany).then(function (resp) {
+            var newEmployee = app.employee;
+            newEmployee.position_id = app.selected2;
+            newEmployee.department_id = app.selected1;
+            newEmployee.head_id = app.selected3;
+            console.log(newEmployee);
+            axios.patch('/api/v1/employees/' + app.companyId, newCompany).then(function (resp) {
                 app.$router.replace('/');
             }).catch(function (resp) {
                 console.log(resp);
-                alert("Could not create your company");
+                alert("Could not create your employee");
             });
         }
     }
@@ -48390,14 +48592,16 @@ var render = function() {
         _c(
           "router-link",
           { staticClass: "btn btn-default", attrs: { to: "/" } },
-          [_vm._v("Back")]
+          [_vm._v("Назад")]
         )
       ],
       1
     ),
     _vm._v(" "),
     _c("div", { staticClass: "panel panel-default" }, [
-      _c("div", { staticClass: "panel-heading" }, [_vm._v("Edit company")]),
+      _c("div", { staticClass: "panel-heading" }, [
+        _vm._v("Добавление нового сотрудника")
+      ]),
       _vm._v(" "),
       _c("div", { staticClass: "panel-body" }, [
         _c(
@@ -48413,28 +48617,26 @@ var render = function() {
           [
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-xs-12 form-group" }, [
-                _c("label", { staticClass: "control-label" }, [
-                  _vm._v("Company name")
-                ]),
+                _c("label", { staticClass: "control-label" }, [_vm._v("ФИО")]),
                 _vm._v(" "),
                 _c("input", {
                   directives: [
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.company.name,
-                      expression: "company.name"
+                      value: _vm.employee.name,
+                      expression: "employee.name"
                     }
                   ],
                   staticClass: "form-control",
                   attrs: { type: "text" },
-                  domProps: { value: _vm.company.name },
+                  domProps: { value: _vm.employee.name },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.$set(_vm.company, "name", $event.target.value)
+                      _vm.$set(_vm.employee, "name", $event.target.value)
                     }
                   }
                 })
@@ -48444,67 +48646,172 @@ var render = function() {
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-xs-12 form-group" }, [
                 _c("label", { staticClass: "control-label" }, [
-                  _vm._v("Company address")
+                  _vm._v("Отдел")
                 ]),
                 _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.company.address,
-                      expression: "company.address"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text" },
-                  domProps: { value: _vm.company.address },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selected1,
+                        expression: "selected1"
                       }
-                      _vm.$set(_vm.company, "address", $event.target.value)
+                    ],
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.selected1 = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
                     }
-                  }
-                })
+                  },
+                  [
+                    _c("option", { domProps: { value: null } }, [
+                      _vm._v(
+                        "\n                                Пусто\n                            "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.departments, function(department, key) {
+                      return _c(
+                        "option",
+                        { domProps: { value: department.id } },
+                        [
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(department.name) +
+                              "\n                            "
+                          )
+                        ]
+                      )
+                    })
+                  ],
+                  2
+                )
               ])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-xs-12 form-group" }, [
                 _c("label", { staticClass: "control-label" }, [
-                  _vm._v("Company website")
+                  _vm._v("Должность")
                 ]),
                 _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.company.website,
-                      expression: "company.website"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text" },
-                  domProps: { value: _vm.company.website },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selected2,
+                        expression: "selected2"
                       }
-                      _vm.$set(_vm.company, "website", $event.target.value)
+                    ],
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.selected2 = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
                     }
-                  }
-                })
+                  },
+                  _vm._l(_vm.positions, function(position, key) {
+                    return _c("option", { domProps: { value: position.id } }, [
+                      _vm._v(
+                        "\n                                " +
+                          _vm._s(position.name) +
+                          "\n                            "
+                      )
+                    ])
+                  }),
+                  0
+                )
               ])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-xs-12 form-group" }, [
                 _c("label", { staticClass: "control-label" }, [
-                  _vm._v("Company email")
+                  _vm._v("Руководитель")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selected3,
+                        expression: "selected3"
+                      }
+                    ],
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.selected3 = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  [
+                    _c("option", { domProps: { value: null } }, [
+                      _vm._v(
+                        "\n                                Пусто\n                            "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.employees, function(employee, key) {
+                      return _c(
+                        "option",
+                        { domProps: { value: employee.id } },
+                        [
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(employee.name) +
+                              "\n                            "
+                          )
+                        ]
+                      )
+                    })
+                  ],
+                  2
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-xs-12 form-group" }, [
+                _c("label", { staticClass: "control-label" }, [
+                  _vm._v("Телефон")
                 ]),
                 _vm._v(" "),
                 _c("input", {
@@ -48512,19 +48819,19 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.company.email,
-                      expression: "company.email"
+                      value: _vm.employee.phone,
+                      expression: "employee.phone"
                     }
                   ],
                   staticClass: "form-control",
                   attrs: { type: "text" },
-                  domProps: { value: _vm.company.email },
+                  domProps: { value: _vm.employee.phone },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.$set(_vm.company, "email", $event.target.value)
+                      _vm.$set(_vm.employee, "phone", $event.target.value)
                     }
                   }
                 })
@@ -48545,7 +48852,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-xs-12 form-group" }, [
-        _c("button", { staticClass: "btn btn-success" }, [_vm._v("Update")])
+        _c("button", { staticClass: "btn btn-success" }, [_vm._v("Создать")])
       ])
     ])
   }
@@ -48564,6 +48871,372 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */,
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(62)
+/* template */
+var __vue_template__ = __webpack_require__(63)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/employees/employeesStructure.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0fcfcc62", Component.options)
+  } else {
+    hotAPI.reload("data-v-0fcfcc62", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 62 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            employees: [],
+            departments: [],
+            selected: 'Все',
+            key: 10
+        };
+    },
+    mounted: function mounted() {
+        var app = this;
+        axios.get('/api/v1/employees').then(function (resp) {
+            app.employees = resp.data.data;
+        }).catch(function (resp) {
+            console.log(resp);
+            alert("Could not load employees");
+        });
+
+        axios.get('/api/v1/departments').then(function (resp) {
+            app.departments = resp.data;
+        }).catch(function (resp) {
+            console.log(resp);
+            alert("Could not load departments");
+        });
+    },
+
+    computed: {
+        filteredList: function filteredList() {
+            var sel = this.selected;
+            var app = this;
+            return this.employees.filter(function (elem) {
+
+                if (sel === 'Все') return true;else if (elem.department != null) {
+
+                    return elem.department.id == sel;
+                } else return false;
+            });
+        }
+    },
+    methods: {
+        deleteEntry: function deleteEntry(id, index) {
+            if (confirm("Do you really want to delete it?")) {
+                var app = this;
+                axios.delete('/api/v1/employees/' + id).then(function (resp) {
+                    app.employees.splice(index, 1);
+                }).catch(function (resp) {
+                    alert("Could not delete employee");
+                });
+            }
+        }
+    }
+});
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      { staticClass: "form-group" },
+      [
+        _c(
+          "router-link",
+          {
+            staticClass: "btn btn-success",
+            attrs: { to: { name: "createEmployee" } }
+          },
+          [_vm._v("Добавить")]
+        ),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.selected,
+                expression: "selected"
+              }
+            ],
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.selected = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              }
+            }
+          },
+          [
+            _c("option", [_vm._v("\n                Все\n            ")]),
+            _vm._v(" "),
+            _vm._l(_vm.departments, function(department, key) {
+              return _c("option", { domProps: { value: department.id } }, [
+                _vm._v(
+                  "\n                " +
+                    _vm._s(department.name) +
+                    "\n            "
+                )
+              ])
+            })
+          ],
+          2
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "panel panel-default" }, [
+      _c("div", { staticClass: "panel-heading" }, [
+        _vm._v("Список сотрудников")
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "panel-body" }, [
+        _c("table", { staticClass: "table table-bordered table-striped" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c(
+            "tbody",
+            _vm._l(_vm.filteredList, function(employee, index) {
+              return _c("tr", [
+                _c("td", [_vm._v(_vm._s(employee.name))]),
+                _vm._v(" "),
+                employee.department
+                  ? _c("td", [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(employee.department.name) +
+                          "\n                    "
+                      )
+                    ])
+                  : _c("td"),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(employee.position.name))]),
+                _vm._v(" "),
+                employee.head
+                  ? _c("td", [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(employee.head.name) +
+                          "\n                    "
+                      )
+                    ])
+                  : _c("td"),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(employee.contact.phone))]),
+                _vm._v(" "),
+                _c(
+                  "td",
+                  [
+                    _c(
+                      "router-link",
+                      {
+                        staticClass: "btn btn-xs btn-default",
+                        attrs: {
+                          to: {
+                            name: "editEmployee",
+                            params: { id: employee.id }
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n                            Редактировать\n                        "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      {
+                        staticClass: "btn btn-xs btn-danger",
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            return _vm.deleteEntry(employee.id, index)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n                            Удалить\n                        "
+                        )
+                      ]
+                    )
+                  ],
+                  1
+                )
+              ])
+            }),
+            0
+          )
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("tyhjtdyjdtyj")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Отдdghjdghл")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Должdghjdghjность")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Руковjdghjdghодитель")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("dghjsfgh")]),
+        _vm._v(" "),
+        _c("th", { attrs: { width: "100" } }, [_vm._v(" ")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-0fcfcc62", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

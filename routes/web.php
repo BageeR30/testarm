@@ -17,3 +17,4 @@
 
 
 Route::get('/', 'HomeController@index')->name('admin.employees.index');
+Route::get('/structure', 'HomeController@structure')->name('admin.employees.structure');

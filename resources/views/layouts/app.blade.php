@@ -39,7 +39,7 @@
                     <ul class="nav navbar-nav ">
                        
                             <li><a href="{{ route('admin.employees.index') }}">Сотрудники</a></li>
-                            <li><a href="{{ route('admin.employees.index') }}">Структура компании</a></li>
+                            <li><a href="{{ route('admin.employees.structure') }}">Структура компании</a></li>
                         
                     </ul>
                 </div>

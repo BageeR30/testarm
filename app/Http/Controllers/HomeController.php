@@ -25,4 +25,9 @@ class HomeController extends Controller
     {
         return view('admin.employees.index');
     }
+
+    public function structure()
+    {
+        return view('admin.employees.structure');
+    }
 }

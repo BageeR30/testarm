@@ -18,11 +18,11 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>ФИО</th>
-                        <th>Отдел</th>
-                        <th>Должность</th>
-                        <th>Руководитель</th>
-                        <th>Телефон</th>
+                        <th>tyhjtdyjdtyj</th>
+                        <th>Отдdghjdghл</th>
+                        <th>Должdghjdghjность</th>
+                        <th>Руковjdghjdghодитель</th>
+                        <th>dghjsfgh</th>
                         <th width="100">&nbsp;</th>
                     </tr>
                     </thead>
@@ -66,6 +66,7 @@
                 employees: [], 
                 departments: [],
                 selected: 'Все', 
+                key: 10
             }
         },
         mounted() {

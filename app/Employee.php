@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Employee extends Model
 {
 
-    protected $fillable = ['name', 'position_id', 'contact_id'];
+    protected $fillable = ['name', 'position_id', 'contact_id', 'head_id', 'department_id'];
 
     public function position() 
     {
@@ -21,7 +21,7 @@ class Employee extends Model
 
     public function head()
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(self::class);
     }
 
     public function department()
@@ -29,5 +29,9 @@ class Employee extends Model
         return $this->hasOne(Department::class);
     }
 
+    public function sub()
+    {
+        return $this->hasMany(self::class);    
+    }
     
 }
