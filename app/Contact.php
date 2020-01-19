@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Contact extends Model
 {
+    protected $fillable = ['phone', 'email', 'city'];
+
     public function employee()
     {
-        return $this->hasOne(Employee::class);
+        return $this->belongsTo(Employee::class);
     }
 }

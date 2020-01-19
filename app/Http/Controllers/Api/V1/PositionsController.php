@@ -4,13 +4,9 @@ namespace App\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Employee;
-use App\Contact;
 use App\Position;
-use App\Http\Resources\EmployeeResource;
-use Illuminate\Http\Resources\Json\Resource;
 
-class EmployeesController extends Controller
+class PositionsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,8 +15,7 @@ class EmployeesController extends Controller
      */
     public function index()
     {
-        return EmployeeResource::collection(Employee::all());
-        return Employee::all();
+        return Position::all();
     }
 
     /**
@@ -41,19 +36,7 @@ class EmployeesController extends Controller
      */
     public function store(Request $request)
     {
-        $contact = Contact::create([
-            'phone' => $request->phone,
-            'city' => $request->city,
-            'email' => $request->email,
-        ]);
-
-        $employee = Employee::create([
-            'name' => $request->name,
-            'contact_id' => $contact->id,
-            'position_id' => $request->position_id
-        ]);
-
-        return new EmployeeResource($employee);
+        //
     }
 
     /**
@@ -62,9 +45,9 @@ class EmployeesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Employee $employee)
+    public function show($id)
     {
-        return new EmployeeResource($employee);
+        //
     }
 
     /**
@@ -73,6 +56,10 @@ class EmployeesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function edit($id)
+    {
+        //
+    }
 
     /**
      * Update the specified resource in storage.

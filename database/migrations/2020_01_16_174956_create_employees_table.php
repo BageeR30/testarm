@@ -19,7 +19,7 @@ class CreateEmployeesTable extends Migration
             $table->integer('department_id')->nullable();
             $table->integer('position_id');
             $table->integer('head_id')->nullable();
-            $table->integer('contact_id')->nullable();
+            $table->integer('contact_id');
             $table->timestamps();
         });
     }

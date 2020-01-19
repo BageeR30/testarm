@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
+
+    protected $fillable = ['name', 'position_id', 'contact_id'];
+
     public function position() 
     {
-        return $this->hasOne(Position::class);
+        return $this->hasOne(Position::class, 'id', 'position_id');
     }
 
     public function contact()
@@ -18,7 +21,7 @@ class Employee extends Model
 
     public function head()
     {
-        return $this->hasOne(Employee::class);
+        return $this->belongsTo(Employee::class);
     }
 
     public function department()

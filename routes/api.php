@@ -17,8 +17,24 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
-Route::get('employees', 'EmployeesController@index'); 
-Route::get('employee/{id}', 'EmployeesController@show');
-Route::post('employee', 'EmployeesController@store');
-Route::put('employee/{id}', 'EmployeesController@update');
-Route::delete('employee/{id}', 'EmployeesController@destroy');
+Route::group(['prefix' => '/v1', 
+   'namespace' => 'Api\V1', 
+   'as' => 'api.'], function () {
+        Route::resource('employees', 'EmployeesController', 
+            ['except' => ['create', 'edit']]);
+
+        Route::resource('positions', 'PositionsController', 
+            ['except' => ['create', 'edit']]);
+
+        Route::resource('contacts', 'ContactsController', 
+            ['except' => ['create', 'edit']]);
+
+        Route::resource('departments', 'DepartmentsController', 
+            ['except' => ['create', 'edit']]);
+    });
+
+// Route::get('employees', 'EmployeesController@index'); 
+// Route::get('employee/{employee}', 'EmployeesController@show');
+// Route::post('employee', 'EmployeesController@store');
+// Route::put('employee/{id}', 'EmployeesController@update');
+// Route::delete('employee/{id}', 'EmployeesController@destroy');
