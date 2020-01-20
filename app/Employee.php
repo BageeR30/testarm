@@ -29,9 +29,9 @@ class Employee extends Model
         return $this->hasOne(Department::class);
     }
 
-    public function sub()
-    {
-        return $this->hasMany(self::class);    
-    }
+    // public function sub()
+    // {
+    //     return $this->hasMany(self::class);    
+    // }
     
 }

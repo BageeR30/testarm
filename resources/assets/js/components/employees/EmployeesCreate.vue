@@ -22,7 +22,7 @@
                                 <option v-bind:value="null">
                                     Пусто
                                 </option>
-                                <option v-for="department, key in departments" v-bind:value="department.id">
+                                <option v-for="(department) in departments" v-bind:key="department.name" v-bind:value="department.id">
                                     {{ department.name }}
                                 </option>
                             </select>
@@ -32,10 +32,11 @@
                         <div class="col-xs-12 form-group">
                             <label class="control-label">Должность</label>
                             <select v-model="selected2">
-                                <option v-for="position, key in positions" v-bind:value="position.id">
+                                <option v-for="position in positions" v-bind:value="position.id" v-bind:key="position.name">
                                     {{ position.name }}
                                 </option>
                             </select>
+                            
                         </div>
                     </div>
                     <div class="row">
@@ -45,7 +46,7 @@
                                 <option v-bind:value="null">
                                     Пусто
                                 </option>
-                                <option v-for="employee, key in employees" v-bind:value="employee.id">
+                                <option v-for="employee in employees" v-bind:key="employee.name" v-bind:value="employee.id">
                                     {{ employee.name }}
                                 </option>
                             </select>
