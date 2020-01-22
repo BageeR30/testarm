@@ -22,7 +22,7 @@ class EmployeeResource extends Resource
         $array =  [
             'id' => $this->id,
             'name' => $this->name,
-            'contact' => Contact::findOrFail($this->contact_id),
+            'contact' => $this->contact,
             'position' => Position::findOrFail($this->position_id),
             'department' => Department::find($this->department_id),
             'head' => Employee::find($this->head_id),

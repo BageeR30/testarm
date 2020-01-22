@@ -11,7 +11,7 @@ class Employee extends Model
 
     public function position() 
     {
-        return $this->hasOne(Position::class, 'id', 'position_id');
+        return $this->belongsTo(Position::class, 'position_id');
     }
 
     public function contact()
@@ -21,12 +21,12 @@ class Employee extends Model
 
     public function head()
     {
-        return $this->belongsTo(self::class);
+        return $this->belongsTo(self::class, 'head_id');
     }
 
     public function department()
     {
-        return $this->hasOne(Department::class);
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     // public function sub()

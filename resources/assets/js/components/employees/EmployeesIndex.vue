@@ -6,7 +6,7 @@
                 <option>
                     Все
                 </option>
-                <option v-for="department, key in departments" v-bind:value="department.id">
+                <option v-for="department in departments" v-bind:value="department.id">
                     {{ department.name }}
                 </option>
             </select>

@@ -37,20 +37,22 @@ class EmployeesController extends Controller
             'department_id' => 'integer|nullable',
             'head_id' => 'integer|nullable',
         ]);
-        $contact = Contact::create([
-            'phone' => $request->phone,
-            'city' => $request->city,
-            'email' => $request->email,
-        ]);
-
+        
         $employee = Employee::create([
             'name' => $request->name,
-            'contact_id' => $contact->id,
             'position_id' => $request->position_id,
             'department_id' => $request->department_id,
             'head_id' => $request->head_id,
         ]);
 
+        $contact = new Contact([
+            'employee_id' => $employee->id,
+            'phone' => $request->phone,
+            'city' => $request->city,
+            'email' => $request->email,
+        ]);
+   
+        $contact->save();
         return new EmployeeResource($employee);
     }
 

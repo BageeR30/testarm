@@ -6,6 +6,12 @@
         </div>
 
         <div class="panel panel-default">
+            <p v-if="errors.length">
+                <b>Пожалуйста исправьте указанные ошибки:</b>
+                <ul>
+                    <li v-for="error in errors">{{ error }}</li>
+                </ul>
+            </p>
             <div class="panel-heading">Добавление нового сотрудника</div>
             <div class="panel-body">
                 <form v-on:submit.prevent="saveForm()">
@@ -36,7 +42,6 @@
                                     {{ position.name }}
                                 </option>
                             </select>
-                            
                         </div>
                     </div>
                     <div class="row">
@@ -55,12 +60,12 @@
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label class="control-label">Телефон</label>
-                            <input type="text" v-model="employee.phone" class="form-control">
+                            <input type="tel" v-model="employee.phone" class="form-control">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 form-group">
-                            <button class="btn btn-success">Создать</button>
+                            <button class="btn btn-success" type="submit">Создать</button>
                         </div>
                     </div>
                 </form>
@@ -80,12 +85,16 @@
                     head_id: '',
                     phone: '',
                 },
+                department: {
+                    name,
+                },
                 departments: [],
                 positions: [],
                 employees: [],
-                selected1: -1,
+                selected1: null,
                 selected2: 1,
-                selected3: -1,
+                selected3: null,
+                errors: [],
 
             }
         },
@@ -119,7 +128,10 @@
                 });
         },
         methods: {
+            
             saveForm() {
+                if (this.checkForm())
+                {
                 var app = this;
                 var newEmployee = app.employee;
                 newEmployee.position_id = app.selected2;
@@ -134,7 +146,25 @@
                         console.log(resp);
                         alert("Could not create your employee");
                     });
-            }
+                }
+            },
+            checkForm: function (e) {
+                var employee = this.employee;
+                if (employee.name && employee.phone) {
+                    return true;
+                }
+
+                this.errors = [];
+
+                if (!employee.name) {
+                    this.errors.push('Требуется указать имя.');
+                }
+                if (!this.phone) {
+                    this.errors.push('Требуется указать номер телефона.');
+                }
+
+                e.preventDefault();
+            },
         }
     }
 </script>
