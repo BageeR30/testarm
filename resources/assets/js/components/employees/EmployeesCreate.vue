@@ -24,11 +24,11 @@
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label class="control-label">Отдел</label>
-                            <select v-model="selected1">
+                            <select v-model="selectedDepartment">
                                 <option v-bind:value="null">
                                     Пусто
                                 </option>
-                                <option v-for="(department) in departments" v-bind:key="department.name" v-bind:value="department.id">
+                                <option v-for="department in departments" v-bind:key="department.name" v-bind:value="department.id">
                                     {{ department.name }}
                                 </option>
                             </select>
@@ -37,7 +37,7 @@
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label class="control-label">Должность</label>
-                            <select v-model="selected2">
+                            <select v-model="selectedPosition">
                                 <option v-for="position in positions" v-bind:value="position.id" v-bind:key="position.name">
                                     {{ position.name }}
                                 </option>
@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label class="control-label">Руководитель</label>
-                            <select v-model="selected3">
+                            <select v-model="selectedEmployee">
                                 <option v-bind:value="null">
                                     Пусто
                                 </option>
@@ -60,7 +60,7 @@
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label class="control-label">Телефон</label>
-                            <input type="tel" v-model="employee.phone" class="form-control">
+                            <input type="tel" v-model="contact.phone" class="form-control">
                         </div>
                     </div>
                     <div class="row">
@@ -75,9 +75,13 @@
 </template>
 
 <script>
+
+import mixins from './mixins/mixins.js';
     export default {
+        mixins: [mixins],
         data: function () {
             return {
+                
                 employee: {
                     name: '',
                     department_id: '',
@@ -88,12 +92,13 @@
                 department: {
                     name,
                 },
+                contact: [],
                 departments: [],
                 positions: [],
                 employees: [],
-                selected1: null,
-                selected2: 1,
-                selected3: null,
+                selectedDepartment: null,
+                selectedPosition: 1,
+                selectedEmployee: null,
                 errors: [],
 
             }
@@ -132,38 +137,21 @@
             saveForm() {
                 if (this.checkForm())
                 {
-                var app = this;
-                var newEmployee = app.employee;
-                newEmployee.position_id = app.selected2;
-                newEmployee.department_id = app.selected1;
-                newEmployee.head_id = app.selected3;
-                console.log(newEmployee);
-                axios.post('/api/v1/employees', newEmployee)
-                    .then(function (resp) {
-                        app.$router.push({path: '/'});
-                    })
-                    .catch(function (resp) {
-                        console.log(resp);
-                        alert("Could not create your employee");
-                    });
+                    var app = this;
+                    var newEmployee = app.employee;
+                    newEmployee.phone = app.contact.phone;
+                    newEmployee.position_id = app.selectedPosition;
+                    newEmployee.department_id = app.selectedDepartment;
+                    newEmployee.head_id = app.selectedEmployee;
+                    axios.post('/api/v1/employees', newEmployee)
+                        .then(function (resp) {
+                            app.$router.push({path: '/'});
+                        })
+                        .catch(function (resp) {
+                            console.log(resp);
+                            alert("Could not create your employee");
+                        });
                 }
-            },
-            checkForm: function (e) {
-                var employee = this.employee;
-                if (employee.name && employee.phone) {
-                    return true;
-                }
-
-                this.errors = [];
-
-                if (!employee.name) {
-                    this.errors.push('Требуется указать имя.');
-                }
-                if (!this.phone) {
-                    this.errors.push('Требуется указать номер телефона.');
-                }
-
-                e.preventDefault();
             },
         }
     }

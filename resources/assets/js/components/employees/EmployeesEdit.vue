@@ -6,6 +6,12 @@
         </div>
 
         <div class="panel panel-default">
+            <p v-if="errors.length">
+                <b>Пожалуйста исправьте указанные ошибки:</b>
+                <ul>
+                    <li v-for="error in errors">{{ error }}</li>
+                </ul>
+            </p>
             <div class="panel-heading">Добавление нового сотрудника</div>
             <div class="panel-body">
                 <form v-on:submit.prevent="saveForm()">
@@ -18,11 +24,11 @@
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label class="control-label">Отдел</label>
-                            <select v-model="selected1">
+                            <select v-model="selectedDepartment">
                                 <option v-bind:value="null">
                                     Пусто
                                 </option>
-                                <option v-for="department, key in departments" v-bind:value="department.id">
+                                <option v-for="department in departments" v-bind:value="department.id" v-bind:key="department.name">
                                     {{ department.name }}
                                 </option>
                             </select>
@@ -31,8 +37,8 @@
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label class="control-label">Должность</label>
-                            <select v-model="selected2">
-                                <option v-for="position, key in positions" v-bind:value="position.id">
+                            <select v-model="selectedPosition">
+                                <option v-for="position in positions" v-bind:value="position.id" v-bind:key="position.name">
                                     {{ position.name }}
                                 </option>
                             </select>
@@ -41,11 +47,11 @@
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label class="control-label">Руководитель</label>
-                            <select v-model="selected3">
+                            <select v-model="selectedEmployee">
                                 <option v-bind:value="null">
                                     Пусто
                                 </option>
-                                <option v-for="employee, key in employees" v-bind:value="employee.id">
+                                <option v-for="employee in employees" v-bind:value="employee.id" v-bind:key="employee.name">
                                     {{ employee.name }}
                                 </option>
                             </select>
@@ -54,12 +60,12 @@
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label class="control-label">Телефон</label>
-                            <input type="text" v-model="employee.phone" class="form-control">
+                            <input type="text" v-model="contact.phone" class="form-control">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 form-group">
-                            <button class="btn btn-success">Создать</button>
+                            <button class="btn btn-success">Изменить</button>
                         </div>
                     </div>
                 </form>
@@ -69,56 +75,102 @@
 </template>
 
 <script>
+import mixins from './mixins/mixins.js';
+
     export default {
-        mounted() {
-            let app = this;
-            let id = app.$route.params.id;
-            app.employeeId = id;
-            axios.get('/api/v1/employees/' + id)
-                .then(function (resp) {
-                    console.log(resp.data.data);
-                    app.selected2 = resp.data.data.department.name;
-                    
-                    app.employee = resp.data.data;
-                })
-                .catch(function () {
-                    alert("Could not load your company")
-                });
-        },
+        mixins: [mixins],
         data: function () {
             return {
                 employeeId: null,
                 employee: {
                     name: '',
+                    department: [],
+                    position: [],
+                    head: [],
                     department_id: '',
                     position_id: '',
                     head_id: '',
+                    
+                },
+                contact: {
                     phone: '',
                 },
                 departments: [],
                 positions: [],
                 employees: [],
-                // selected1: this.,
-                // selected2: this.,
-                // selected3: this.,
+                selectedPosition: '',
+                selectedDepartment: '',
+                selectedEmployee: '',
             }
         },
+        mounted() {
+            let app = this;
+            let id = app.$route.params.id;
+            app.employeeId = id;
+
+            axios.get('/api/v1/departments')
+                .then(function (resp) {
+                    app.departments = resp.data
+                })
+                .catch(function (resp) {
+                    console.log(resp);
+                    alert("Could not load departments");
+                });
+
+            axios.get('/api/v1/positions')
+                .then(function (resp) {
+                    app.positions = resp.data
+                })
+                .catch(function (resp) {
+                    console.log(resp);
+                    alert("Could not load positions");
+                });
+
+            axios.get('/api/v1/employees')
+                .then(function (resp) {
+                    app.employees = resp.data.data.filter(function(empl) {
+                    return empl.id != app.employeeId;
+                });
+                })
+                .catch(function (resp) {
+                    console.log(resp);
+                    alert("Could not load employees");
+                });
+
+            axios.get('/api/v1/employees/' + id)
+                .then(function (resp) {
+                    app.selectedPosition = resp.data.data.position!= null ? resp.data.data.position.id : null;
+                    app.selectedEmployee = resp.data.data.head != null ? resp.data.data.head.id : null;
+                    app.selectedDepartment = resp.data.data.department != null ? resp.data.data.department.id : null;
+                    
+                    app.employee = resp.data.data;
+                    app.contact = resp.data.data.contact;
+                })
+                .catch(function (resp) {
+                    console.log(resp);
+                    alert("Could not load your employee")
+                });
+
+        },
+        
         methods: {
             saveForm() {
-                var app = this;
-                var newEmployee = app.employee;
-                newEmployee.position_id = app.selected2;
-                newEmployee.department_id = app.selected1;
-                newEmployee.head_id = app.selected3;
-                console.log(newEmployee);
-                axios.patch('/api/v1/employees/' + app.companyId, newCompany)
-                    .then(function (resp) {
-                        app.$router.replace('/');
-                    })
-                    .catch(function (resp) {
-                        console.log(resp);
-                        alert("Could not create your employee");
-                    });
+                if (this.checkForm())
+                {
+                    var app = this;
+                    var newEmployee = app.employee;
+                    newEmployee.position_id = app.selectedPosition;
+                    newEmployee.department_id = app.selectedDepartment;
+                    newEmployee.head_id = app.selectedEmployee;
+                    axios.patch('/api/v1/employees/' + app.employeeId, newEmployee)
+                        .then(function (resp) {
+                            app.$router.replace('/');
+                        })
+                        .catch(function (resp) {
+                            console.log(resp);
+                            alert("Could not create your employee");
+                        });
+                }
             }
         }
     }

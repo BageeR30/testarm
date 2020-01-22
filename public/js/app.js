@@ -47979,6 +47979,7 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mixins_mixins_js__ = __webpack_require__(76);
 //
 //
 //
@@ -48056,9 +48057,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+    mixins: [__WEBPACK_IMPORTED_MODULE_0__mixins_mixins_js__["a" /* default */]],
     data: function data() {
         return {
+
             employee: {
                 name: '',
                 department_id: '',
@@ -48069,12 +48074,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             department: {
                 name: name
             },
+            contact: [],
             departments: [],
             positions: [],
             employees: [],
-            selected1: null,
-            selected2: 1,
-            selected3: null,
+            selectedDepartment: null,
+            selectedPosition: 1,
+            selectedEmployee: null,
             errors: []
 
         };
@@ -48108,10 +48114,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (this.checkForm()) {
                 var app = this;
                 var newEmployee = app.employee;
-                newEmployee.position_id = app.selected2;
-                newEmployee.department_id = app.selected1;
-                newEmployee.head_id = app.selected3;
-                console.log(newEmployee);
+                newEmployee.phone = app.contact.phone;
+                newEmployee.position_id = app.selectedPosition;
+                newEmployee.department_id = app.selectedDepartment;
+                newEmployee.head_id = app.selectedEmployee;
                 axios.post('/api/v1/employees', newEmployee).then(function (resp) {
                     app.$router.push({ path: '/' });
                 }).catch(function (resp) {
@@ -48119,24 +48125,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     alert("Could not create your employee");
                 });
             }
-        },
-
-        checkForm: function checkForm(e) {
-            var employee = this.employee;
-            if (employee.name && employee.phone) {
-                return true;
-            }
-
-            this.errors = [];
-
-            if (!employee.name) {
-                this.errors.push('Требуется указать имя.');
-            }
-            if (!this.phone) {
-                this.errors.push('Требуется указать номер телефона.');
-            }
-
-            e.preventDefault();
         }
     }
 });
@@ -48235,8 +48223,8 @@ var render = function() {
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.selected1,
-                        expression: "selected1"
+                        value: _vm.selectedDepartment,
+                        expression: "selectedDepartment"
                       }
                     ],
                     on: {
@@ -48249,7 +48237,7 @@ var render = function() {
                             var val = "_value" in o ? o._value : o.value
                             return val
                           })
-                        _vm.selected1 = $event.target.multiple
+                        _vm.selectedDepartment = $event.target.multiple
                           ? $$selectedVal
                           : $$selectedVal[0]
                       }
@@ -48297,8 +48285,8 @@ var render = function() {
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.selected2,
-                        expression: "selected2"
+                        value: _vm.selectedPosition,
+                        expression: "selectedPosition"
                       }
                     ],
                     on: {
@@ -48311,7 +48299,7 @@ var render = function() {
                             var val = "_value" in o ? o._value : o.value
                             return val
                           })
-                        _vm.selected2 = $event.target.multiple
+                        _vm.selectedPosition = $event.target.multiple
                           ? $$selectedVal
                           : $$selectedVal[0]
                       }
@@ -48348,8 +48336,8 @@ var render = function() {
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.selected3,
-                        expression: "selected3"
+                        value: _vm.selectedEmployee,
+                        expression: "selectedEmployee"
                       }
                     ],
                     on: {
@@ -48362,7 +48350,7 @@ var render = function() {
                             var val = "_value" in o ? o._value : o.value
                             return val
                           })
-                        _vm.selected3 = $event.target.multiple
+                        _vm.selectedEmployee = $event.target.multiple
                           ? $$selectedVal
                           : $$selectedVal[0]
                       }
@@ -48408,19 +48396,19 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.employee.phone,
-                      expression: "employee.phone"
+                      value: _vm.contact.phone,
+                      expression: "contact.phone"
                     }
                   ],
                   staticClass: "form-control",
                   attrs: { type: "tel" },
-                  domProps: { value: _vm.employee.phone },
+                  domProps: { value: _vm.contact.phone },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.$set(_vm.employee, "phone", $event.target.value)
+                      _vm.$set(_vm.contact, "phone", $event.target.value)
                     }
                   }
                 })
@@ -48512,6 +48500,7 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mixins_mixins_js__ = __webpack_require__(76);
 //
 //
 //
@@ -48582,54 +48571,98 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        var app = this;
-        var id = app.$route.params.id;
-        app.employeeId = id;
-        axios.get('/api/v1/employees/' + id).then(function (resp) {
-            console.log(resp.data.data);
-            app.selected2 = resp.data.data.department.name;
-
-            app.employee = resp.data.data;
-        }).catch(function () {
-            alert("Could not load your company");
-        });
-    },
-
+    mixins: [__WEBPACK_IMPORTED_MODULE_0__mixins_mixins_js__["a" /* default */]],
     data: function data() {
         return {
             employeeId: null,
             employee: {
                 name: '',
+                department: [],
+                position: [],
+                head: [],
                 department_id: '',
                 position_id: '',
-                head_id: '',
+                head_id: ''
+
+            },
+            contact: {
                 phone: ''
             },
             departments: [],
             positions: [],
-            employees: []
-            // selected1: this.,
-            // selected2: this.,
-            // selected3: this.,
+            employees: [],
+            selectedPosition: '',
+            selectedDepartment: '',
+            selectedEmployee: ''
         };
     },
+    mounted: function mounted() {
+        var app = this;
+        var id = app.$route.params.id;
+        app.employeeId = id;
+
+        axios.get('/api/v1/departments').then(function (resp) {
+            app.departments = resp.data;
+        }).catch(function (resp) {
+            console.log(resp);
+            alert("Could not load departments");
+        });
+
+        axios.get('/api/v1/positions').then(function (resp) {
+            app.positions = resp.data;
+        }).catch(function (resp) {
+            console.log(resp);
+            alert("Could not load positions");
+        });
+
+        axios.get('/api/v1/employees').then(function (resp) {
+            app.employees = resp.data.data.filter(function (empl) {
+                return empl.id != app.employeeId;
+            });
+        }).catch(function (resp) {
+            console.log(resp);
+            alert("Could not load employees");
+        });
+
+        axios.get('/api/v1/employees/' + id).then(function (resp) {
+            app.selectedPosition = resp.data.data.position != null ? resp.data.data.position.id : null;
+            app.selectedEmployee = resp.data.data.head != null ? resp.data.data.head.id : null;
+            app.selectedDepartment = resp.data.data.department != null ? resp.data.data.department.id : null;
+
+            app.employee = resp.data.data;
+            app.contact = resp.data.data.contact;
+        }).catch(function (resp) {
+            console.log(resp);
+            alert("Could not load your employee");
+        });
+    },
+
+
     methods: {
         saveForm: function saveForm() {
-            var app = this;
-            var newEmployee = app.employee;
-            newEmployee.position_id = app.selected2;
-            newEmployee.department_id = app.selected1;
-            newEmployee.head_id = app.selected3;
-            console.log(newEmployee);
-            axios.patch('/api/v1/employees/' + app.companyId, newCompany).then(function (resp) {
-                app.$router.replace('/');
-            }).catch(function (resp) {
-                console.log(resp);
-                alert("Could not create your employee");
-            });
+            if (this.checkForm()) {
+                var app = this;
+                var newEmployee = app.employee;
+                newEmployee.position_id = app.selectedPosition;
+                newEmployee.department_id = app.selectedDepartment;
+                newEmployee.head_id = app.selectedEmployee;
+                axios.patch('/api/v1/employees/' + app.employeeId, newEmployee).then(function (resp) {
+                    app.$router.replace('/');
+                }).catch(function (resp) {
+                    console.log(resp);
+                    alert("Could not create your employee");
+                });
+            }
         }
     }
 });
@@ -48657,6 +48690,20 @@ var render = function() {
     ),
     _vm._v(" "),
     _c("div", { staticClass: "panel panel-default" }, [
+      _vm.errors.length
+        ? _c("p", [
+            _c("b", [_vm._v("Пожалуйста исправьте указанные ошибки:")]),
+            _vm._v(" "),
+            _c(
+              "ul",
+              _vm._l(_vm.errors, function(error) {
+                return _c("li", [_vm._v(_vm._s(error))])
+              }),
+              0
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
       _c("div", { staticClass: "panel-heading" }, [
         _vm._v("Добавление нового сотрудника")
       ]),
@@ -48714,8 +48761,8 @@ var render = function() {
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.selected1,
-                        expression: "selected1"
+                        value: _vm.selectedDepartment,
+                        expression: "selectedDepartment"
                       }
                     ],
                     on: {
@@ -48728,7 +48775,7 @@ var render = function() {
                             var val = "_value" in o ? o._value : o.value
                             return val
                           })
-                        _vm.selected1 = $event.target.multiple
+                        _vm.selectedDepartment = $event.target.multiple
                           ? $$selectedVal
                           : $$selectedVal[0]
                       }
@@ -48741,10 +48788,13 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
-                    _vm._l(_vm.departments, function(department, key) {
+                    _vm._l(_vm.departments, function(department) {
                       return _c(
                         "option",
-                        { domProps: { value: department.id } },
+                        {
+                          key: department.name,
+                          domProps: { value: department.id }
+                        },
                         [
                           _vm._v(
                             "\n                                " +
@@ -48773,8 +48823,8 @@ var render = function() {
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.selected2,
-                        expression: "selected2"
+                        value: _vm.selectedPosition,
+                        expression: "selectedPosition"
                       }
                     ],
                     on: {
@@ -48787,20 +48837,24 @@ var render = function() {
                             var val = "_value" in o ? o._value : o.value
                             return val
                           })
-                        _vm.selected2 = $event.target.multiple
+                        _vm.selectedPosition = $event.target.multiple
                           ? $$selectedVal
                           : $$selectedVal[0]
                       }
                     }
                   },
-                  _vm._l(_vm.positions, function(position, key) {
-                    return _c("option", { domProps: { value: position.id } }, [
-                      _vm._v(
-                        "\n                                " +
-                          _vm._s(position.name) +
-                          "\n                            "
-                      )
-                    ])
+                  _vm._l(_vm.positions, function(position) {
+                    return _c(
+                      "option",
+                      { key: position.name, domProps: { value: position.id } },
+                      [
+                        _vm._v(
+                          "\n                                " +
+                            _vm._s(position.name) +
+                            "\n                            "
+                        )
+                      ]
+                    )
                   }),
                   0
                 )
@@ -48820,8 +48874,8 @@ var render = function() {
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.selected3,
-                        expression: "selected3"
+                        value: _vm.selectedEmployee,
+                        expression: "selectedEmployee"
                       }
                     ],
                     on: {
@@ -48834,7 +48888,7 @@ var render = function() {
                             var val = "_value" in o ? o._value : o.value
                             return val
                           })
-                        _vm.selected3 = $event.target.multiple
+                        _vm.selectedEmployee = $event.target.multiple
                           ? $$selectedVal
                           : $$selectedVal[0]
                       }
@@ -48847,10 +48901,13 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
-                    _vm._l(_vm.employees, function(employee, key) {
+                    _vm._l(_vm.employees, function(employee) {
                       return _c(
                         "option",
-                        { domProps: { value: employee.id } },
+                        {
+                          key: employee.name,
+                          domProps: { value: employee.id }
+                        },
                         [
                           _vm._v(
                             "\n                                " +
@@ -48877,19 +48934,19 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.employee.phone,
-                      expression: "employee.phone"
+                      value: _vm.contact.phone,
+                      expression: "contact.phone"
                     }
                   ],
                   staticClass: "form-control",
                   attrs: { type: "text" },
-                  domProps: { value: _vm.employee.phone },
+                  domProps: { value: _vm.contact.phone },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.$set(_vm.employee, "phone", $event.target.value)
+                      _vm.$set(_vm.contact, "phone", $event.target.value)
                     }
                   }
                 })
@@ -48910,7 +48967,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-xs-12 form-group" }, [
-        _c("button", { staticClass: "btn btn-success" }, [_vm._v("Создать")])
+        _c("button", { staticClass: "btn btn-success" }, [_vm._v("Изменить")])
       ])
     ])
   }
@@ -48977,6 +49034,8 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Tree_vue__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Tree_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Tree_vue__);
 //
 //
 //
@@ -48992,103 +49051,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            employees: [],
-            departments: [],
-            selected: 'Все',
-            key: 10
+            tree: {
+                name: "A cool folder",
+                children: [{
+                    name: "A cool sub-folder 1",
+                    children: [{ name: "A cool sub-sub-folder 1" }, { name: "A cool sub-sub-folder 2" }]
+                }, { name: "This one is not that cool" }]
+
+            },
+            structure: []
         };
+    },
+    components: {
+        Tree: __WEBPACK_IMPORTED_MODULE_0__Tree_vue___default.a
+    },
+    props: {
+        treeData: Object
     },
     mounted: function mounted() {
         var app = this;
-        axios.get('/api/v1/employees').then(function (resp) {
-            app.employees = resp.data.data;
+        axios.get('/api/v1/structure').then(function (resp) {
+            app.structure = resp.data.heads;
+            console.log(app.structure);
         }).catch(function (resp) {
             console.log(resp);
-            alert("Could not load employees");
+            alert("Could not load structure");
         });
-
-        axios.get('/api/v1/departments').then(function (resp) {
-            app.departments = resp.data;
-        }).catch(function (resp) {
-            console.log(resp);
-            alert("Could not load departments");
-        });
-    },
-
-    computed: {
-        filteredList: function filteredList() {
-            var sel = this.selected;
-            var app = this;
-            return this.employees.filter(function (elem) {
-
-                if (sel === 'Все') return true;else if (elem.department != null) {
-
-                    return elem.department.id == sel;
-                } else return false;
-            });
-        }
-    },
-    methods: {
-        deleteEntry: function deleteEntry(id, index) {
-            if (confirm("Do you really want to delete it?")) {
-                var app = this;
-                axios.delete('/api/v1/employees/' + id).then(function (resp) {
-                    app.employees.splice(index, 1);
-                }).catch(function (resp) {
-                    alert("Could not delete employee");
-                });
-            }
-        }
     }
 });
 
@@ -49101,176 +49095,23 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c(
-      "div",
-      { staticClass: "form-group" },
-      [
-        _c(
-          "router-link",
-          {
-            staticClass: "btn btn-success",
-            attrs: { to: { name: "createEmployee" } }
-          },
-          [_vm._v("Добавить")]
-        ),
-        _vm._v(" "),
-        _c(
-          "select",
-          {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.selected,
-                expression: "selected"
-              }
-            ],
-            on: {
-              change: function($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function(o) {
-                    return o.selected
-                  })
-                  .map(function(o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.selected = $event.target.multiple
-                  ? $$selectedVal
-                  : $$selectedVal[0]
-              }
-            }
-          },
-          [
-            _c("option", [_vm._v("\n                Все\n            ")]),
-            _vm._v(" "),
-            _vm._l(_vm.departments, function(department, key) {
-              return _c("option", { domProps: { value: department.id } }, [
-                _vm._v(
-                  "\n                " +
-                    _vm._s(department.name) +
-                    "\n            "
-                )
-              ])
-            })
-          ],
-          2
-        )
-      ],
-      1
-    ),
-    _vm._v(" "),
     _c("div", { staticClass: "panel panel-default" }, [
-      _c("div", { staticClass: "panel-heading" }, [
-        _vm._v("Список сотрудников")
-      ]),
+      _c("div", { staticClass: "panel-heading" }, [_vm._v("Структура")]),
       _vm._v(" "),
       _c("div", { staticClass: "panel-body" }, [
-        _c("table", { staticClass: "table table-bordered table-striped" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            _vm._l(_vm.filteredList, function(employee, index) {
-              return _c("tr", [
-                _c("td", [_vm._v(_vm._s(employee.name))]),
-                _vm._v(" "),
-                employee.department
-                  ? _c("td", [
-                      _vm._v(
-                        "\n                        " +
-                          _vm._s(employee.department.name) +
-                          "\n                    "
-                      )
-                    ])
-                  : _c("td"),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(employee.position.name))]),
-                _vm._v(" "),
-                employee.head
-                  ? _c("td", [
-                      _vm._v(
-                        "\n                        " +
-                          _vm._s(employee.head.name) +
-                          "\n                    "
-                      )
-                    ])
-                  : _c("td"),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(employee.contact.phone))]),
-                _vm._v(" "),
-                _c(
-                  "td",
-                  [
-                    _c(
-                      "router-link",
-                      {
-                        staticClass: "btn btn-xs btn-default",
-                        attrs: {
-                          to: {
-                            name: "editEmployee",
-                            params: { id: employee.id }
-                          }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n                            Редактировать\n                        "
-                        )
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "btn btn-xs btn-danger",
-                        attrs: { href: "#" },
-                        on: {
-                          click: function($event) {
-                            return _vm.deleteEntry(employee.id, index)
-                          }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n                            Удалить\n                        "
-                        )
-                      ]
-                    )
-                  ],
-                  1
-                )
-              ])
-            }),
-            0
-          )
-        ])
+        _c(
+          "div",
+          { attrs: { id: "app" } },
+          _vm._l(_vm.structure, function(node) {
+            return _c("div", [_c("tree", { attrs: { "tree-data": node } })], 1)
+          }),
+          0
+        )
       ])
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("tyhjtdyjdtyj")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Отдdghjdghл")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Должdghjdghjность")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Руковjdghjdghодитель")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("dghjsfgh")]),
-        _vm._v(" "),
-        _c("th", { attrs: { width: "100" } }, [_vm._v(" ")])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -49285,6 +49126,693 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 54 */,
+/* 55 */,
+/* 56 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(67)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(65)
+/* template */
+var __vue_template__ = __webpack_require__(66)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/employees/Tree.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-6187f9df", Component.options)
+  } else {
+    hotAPI.reload("data-v-6187f9df", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 65 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__NodeTree__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__NodeTree___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__NodeTree__);
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    treeData: Object
+  },
+  components: {
+    NodeTree: __WEBPACK_IMPORTED_MODULE_0__NodeTree___default.a
+  }
+});
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "tree" }, [
+    _c(
+      "ul",
+      { staticClass: "tree-list" },
+      [_c("node-tree", { attrs: { node: _vm.treeData } })],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-6187f9df", module.exports)
+  }
+}
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(68);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(69)("723909ec", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6187f9df\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Tree.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6187f9df\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Tree.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(56)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.tree-list ul {\r\n  padding-left: 16px;\r\n  margin: 6px 0;\n}\r\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+var listToStyles = __webpack_require__(70)
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+var options = null
+var ssrIdKey = 'data-vue-ssr-id'
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+module.exports = function (parentId, list, _isProduction, _options) {
+  isProduction = _isProduction
+
+  options = _options || {}
+
+  var styles = listToStyles(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = listToStyles(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
+
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  update(obj)
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+  if (options.ssrId) {
+    styleElement.setAttribute(ssrIdKey, obj.id)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports) {
+
+/**
+ * Translates the list format produced by css-loader into something
+ * easier to manipulate.
+ */
+module.exports = function listToStyles (parentId, list) {
+  var styles = []
+  var newStyles = {}
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i]
+    var id = item[0]
+    var css = item[1]
+    var media = item[2]
+    var sourceMap = item[3]
+    var part = {
+      id: parentId + ':' + i,
+      css: css,
+      media: media,
+      sourceMap: sourceMap
+    }
+    if (!newStyles[id]) {
+      styles.push(newStyles[id] = { id: id, parts: [part] })
+    } else {
+      newStyles[id].parts.push(part)
+    }
+  }
+  return styles
+}
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(74)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(72)
+/* template */
+var __vue_template__ = __webpack_require__(73)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/employees/NodeTree.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-bab524fe", Component.options)
+  } else {
+    hotAPI.reload("data-v-bab524fe", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 72 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "node",
+  props: {
+    node: Object
+  }
+});
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "node-tree" }, [
+    _c("span", { staticClass: "label" }, [
+      _vm._v(
+        _vm._s(_vm.node.name) + " (" + _vm._s(_vm.node.position.name) + ")"
+      )
+    ]),
+    _vm._v(" "),
+    _vm.node.children_heads && _vm.node.children_heads.length
+      ? _c(
+          "ul",
+          _vm._l(_vm.node.children_heads, function(child) {
+            return _c("node", { attrs: { node: child } })
+          }),
+          1
+        )
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-bab524fe", module.exports)
+  }
+}
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(75);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(69)("0802ebec", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-bab524fe\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./NodeTree.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-bab524fe\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./NodeTree.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(56)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.label {\r\n  padding-left: 16px;\r\n  margin: 6px 0;\r\n  color:black;\r\n  font-size: 100%;\n}\r\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 76 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = ({
+    methods: {
+        checkForm: function checkForm() {
+            var employee = this.employee;
+            var contact = this.contact;
+            // employee.name = this.checkName(employee.name);
+            // contact.phone = this.checkPhone(contact.phone);
+            if (employee.name && contact.phone) {
+                return true;
+            }
+
+            this.errors = [];
+
+            if (!employee.name) {
+                this.errors.push('Требуется указать имя.');
+            }
+            if (!contact.phone) {
+                this.errors.push('Требуется указать номер телефона(11 цифр).');
+            }
+        },
+        checkPhone: function checkPhone(phone) {
+            console.log(phone);
+            var reg = new RegExp('/\+?\d{11}/s');
+            return reg.exec(phone);
+        },
+        checkName: function checkName(name) {
+            console.log(name);
+            var reg = new RegExp('/([а-яa-z\s]{3,30})/si');
+            return reg.exec(name);
+        }
+    }
+});
 
 /***/ })
 /******/ ]);

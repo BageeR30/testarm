@@ -22,6 +22,20 @@ class EmployeesController extends Controller
         return EmployeeResource::collection(Employee::all());
     }
 
+
+    public function manageCategory()
+    {
+        // $heads = Employee::where('head_id', '=', null)->get();
+        // $allHeads = Employee::all();
+        // // $allHeads = Employee::pluck('name','id')->all();
+        // return compact('heads','allHeads');
+
+        $heads = Employee::whereNull('head_id')
+        ->with('position', 'childrenHeads')
+        ->get();
+        return compact('heads');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -72,13 +86,14 @@ class EmployeesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  Employee  $employee
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request, $id)
     {
-        $employee->update($request->except(['id', 'contact_id']));
-        $employee->contact()->update($request->except('id'));
+        $employee = Employee::findOrfail($id);
+        $employee->update($request->all());
+        $employee->contact()->update($request->contact);
         
         return new EmployeeResource($employee);
     }

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+// use Illuminate\Routing\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,10 +32,6 @@ Route::group(['prefix' => '/v1',
 
         Route::resource('departments', 'DepartmentsController', 
             ['except' => ['create', 'edit']]);
+        Route::get('structure', 'EmployeesController@manageCategory');
     });
 
-// Route::get('employees', 'EmployeesController@index'); 
-// Route::get('employee/{employee}', 'EmployeesController@show');
-// Route::post('employee', 'EmployeesController@store');
-// Route::put('employee/{id}', 'EmployeesController@update');
-// Route::delete('employee/{id}', 'EmployeesController@destroy');

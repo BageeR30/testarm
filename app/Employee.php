@@ -11,7 +11,7 @@ class Employee extends Model
 
     public function position() 
     {
-        return $this->belongsTo(Position::class, 'position_id');
+        return $this->belongsTo(Position::class, 'position_id', 'id');
     }
 
     public function contact()
@@ -21,7 +21,7 @@ class Employee extends Model
 
     public function head()
     {
-        return $this->belongsTo(self::class, 'head_id');
+        return $this->hasMany(self::class, 'head_id', 'id');
     }
 
     public function department()
@@ -29,9 +29,9 @@ class Employee extends Model
         return $this->belongsTo(Department::class, 'department_id');
     }
 
-    // public function sub()
-    // {
-    //     return $this->hasMany(self::class);    
-    // }
+    public function childrenHeads()
+{
+    return $this->hasMany(self::class, 'head_id', 'id')->with('head', 'position', 'childrenHeads');
+}
     
 }
