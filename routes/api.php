@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+// use Illuminate\Routing\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,24 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::group(['prefix' => '/v1', 
+   'namespace' => 'Api\V1', 
+   'as' => 'api.'], function () {
+        Route::resource('employees', 'EmployeesController', 
+            ['except' => ['create', 'edit']]);
+
+        Route::resource('positions', 'PositionsController', 
+            ['except' => ['create', 'edit']]);
+
+        Route::resource('contacts', 'ContactsController', 
+            ['except' => ['create', 'edit']]);
+
+        Route::resource('departments', 'DepartmentsController', 
+            ['except' => ['create', 'edit']]);
+        Route::get('structure', 'EmployeesController@manageCategory');
+    });
+

@@ -17,9 +17,11 @@ class CreateEmployeesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->integer('department_id')->nullable();
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('set null');
             $table->integer('position_id');
+            $table->foreign('position_id')->references('id')->on('positions');
             $table->integer('head_id')->nullable();
-            $table->integer('contact_id')->nullable();
+            $table->foreign('head_id')->references('id')->on('employees')->onDelete('set null');
             $table->timestamps();
         });
     }
