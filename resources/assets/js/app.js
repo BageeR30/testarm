@@ -9,8 +9,10 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 import VueRouter from 'vue-router';
+import Vuelidate from 'vuelidate';
 
 window.Vue.use(VueRouter);
+window.Vue.use(Vuelidate);
 
 import EmployeesIndex from './components/employees/employeesIndex.vue';
 import EmployeesCreate from './components/employees/employeesCreate.vue';

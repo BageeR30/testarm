@@ -6,19 +6,16 @@
         </div>
 
         <div class="panel panel-default">
-            <p v-if="errors.length">
-                <b>Пожалуйста исправьте указанные ошибки:</b>
-                <ul>
-                    <li v-for="error in errors">{{ error }}</li>
-                </ul>
-            </p>
             <div class="panel-heading">Добавление нового сотрудника</div>
             <div class="panel-body">
                 <form v-on:submit.prevent="saveForm()">
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label class="control-label">ФИО</label>
-                            <input type="text" v-model="employee.name" class="form-control">
+                            <input type="text" v-model="employee.name" class="form-control" @blur="$v.employee.name.$touch()">
+                            <span v-if="$v.employee.name.$error">
+                                Введите правильное ФИО
+                            </span>
                         </div>
                     </div>
                     <div class="row">
@@ -60,7 +57,10 @@
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label class="control-label">Телефон</label>
-                            <input type="text" v-model="contact.phone" class="form-control">
+                            <input type="text" v-model="contact.phone" class="form-control" @blur="$v.contact.phone.$touch()">
+                            <span v-if="$v.contact.phone.$error">
+                                Введите номер телефона (11 цифр)
+                            </span>
                         </div>
                     </div>
                     <div class="row">
@@ -75,10 +75,8 @@
 </template>
 
 <script>
-import mixins from './mixins/mixins.js';
-
+import { required, maxLength } from 'vuelidate/lib/validators';
     export default {
-        mixins: [mixins],
         data: function () {
             return {
                 employeeId: null,
@@ -102,6 +100,24 @@ import mixins from './mixins/mixins.js';
                 selectedDepartment: '',
                 selectedEmployee: '',
             }
+        },
+         validations: {
+        
+            contact: {
+                phone: {
+                    required,
+                    validFormat: val => /^\d{11}$/.test(val),
+                }
+                
+            },
+            employee: {
+                name:{
+                    required,
+                    maxLength: maxLength(30),
+                    alpha: val => /^[а-яё\s]*$/i.test(val),
+                }
+                
+            },
         },
         mounted() {
             let app = this;
@@ -155,8 +171,7 @@ import mixins from './mixins/mixins.js';
         
         methods: {
             saveForm() {
-                if (this.checkForm())
-                {
+          
                     var app = this;
                     var newEmployee = app.employee;
                     newEmployee.position_id = app.selectedPosition;
@@ -170,7 +185,7 @@ import mixins from './mixins/mixins.js';
                             console.log(resp);
                             alert("Could not create your employee");
                         });
-                }
+                
             }
         }
     }
