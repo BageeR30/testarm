@@ -19,20 +19,6 @@ import Tree from './Tree.vue';
     export default {
         data: function () {
             return {
-                tree: {
-         name: "A cool folder",
-        children: [
-        {
-          name: "A cool sub-folder 1",
-          children: [
-            { name: "A cool sub-sub-folder 1" },
-            { name: "A cool sub-sub-folder 2" }
-          ]
-        },
-        { name: "This one is not that cool" }
-      ]
-    
-  },
                 structure: [], 
             }
         },
@@ -47,7 +33,6 @@ import Tree from './Tree.vue';
             axios.get('/api/v1/structure')
                 .then(function (resp) {
                     app.structure = resp.data.heads;
-                    console.log(app.structure);
                 })
                 .catch(function (resp) {
                     console.log(resp);

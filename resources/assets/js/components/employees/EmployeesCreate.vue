@@ -6,12 +6,6 @@
         </div>
 
         <div class="panel panel-default">
-            <p v-if="errors.length">
-                <b>Пожалуйста исправьте указанные ошибки:</b>
-                <ul>
-                    <li v-for="error in errors">{{ error }}</li>
-                </ul>
-            </p>
             <div class="panel-heading">Добавление нового сотрудника</div>
             <div class="panel-body">
                 <form v-on:submit.prevent="saveForm()">
@@ -71,7 +65,7 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-12 form-group">
-                            <button class="btn btn-success" type="submit">Создать</button>
+                            <button class="btn btn-success" type="submit" :disabled="$v.$invalid">Создать</button>
                         </div>
                     </div>
                 </form>

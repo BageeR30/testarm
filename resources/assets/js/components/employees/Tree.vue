@@ -18,10 +18,3 @@ export default {
   }
 };
 </script>
-
-<style>
-.tree-list ul {
-  padding-left: 16px;
-  margin: 6px 0;
-}
-</style>
