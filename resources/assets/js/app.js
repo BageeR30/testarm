@@ -14,10 +14,10 @@ import Vuelidate from 'vuelidate';
 window.Vue.use(VueRouter);
 window.Vue.use(Vuelidate);
 
-import EmployeesIndex from './components/employees/employeesIndex.vue';
-import EmployeesCreate from './components/employees/employeesCreate.vue';
-import EmployeesEdit from './components/employees/employeesEdit.vue';
-import EmployeesStructure from './components/employees/employeesStructure.vue';
+import EmployeesIndex from './components/employees/EmployeesIndex.vue';
+import EmployeesCreate from './components/employees/EmployeesCreate.vue';
+import EmployeesEdit from './components/employees/EmployeesEdit.vue';
+import EmployeesStructure from './components/employees/EmployeesStructure.vue';
 
 const routes = [
     {
